@@ -19,8 +19,8 @@ import application.io.Writer;
 import application.model.EmpRecord;
 import application.model.Team;
 
+//Reading text file and writing the exact requirement
 public class Engine implements Runnable {
-
 
     private FileIO fileIO;
     private Writer writer;
@@ -39,7 +39,7 @@ public class Engine implements Runnable {
                 .stream()
                 .map(RecordFactory::execute)
                 .collect(Collectors.toList());
-        //Save all employee records into "database"
+        //Save all employee records into database
         this.emplService.addEmployeeRecords(records);
         //Find all team, couple of employees which have worked under same project and have overlap
         List<Team> teams = this.emplService.findAllTeamsWithOverlap();
@@ -47,21 +47,26 @@ public class Engine implements Runnable {
     }
 
     /**
-     * If don't have couple of employees which have worked together under same project
-     * will be printed message with text "Doesn't exist teams", otherwise
-     * will be find and print the team with best overlap under their joint projects.
+     * If It doesn't have couple of employees which have worked together under same project
+     * "Doesn't exist teams" message will be printed, otherwise
+     * It will be find and print the team with best overlap under their joint projects.
      **/
     private void printResult(List<Team> teams) {
         if (teams.size() != EMPTY_COLLECTION_SIZE) {
             teams.sort((team1, team2) ->
                     (int) (team2.getTotalDuration() - team1.getTotalDuration()));
             Team bestTeam = teams.get(INDEX_ZERO);
-
+            
+            /* this.writer.write(bestTeam.getFirstEmployeeId(),
+            bestTeam.getSecondEmployeeId(),
+            bestTeam.getTotalDuration());*/
+            
             this.writer.write(
                     String.format(TEAM_LONGEST_PERIOD,
                             bestTeam.getFirstEmployeeId(),
                             bestTeam.getSecondEmployeeId(),
-                            bestTeam.getTotalDuration()));
+                            bestTeam.getTotalDuration()));           
+          
         } else {
             this.writer.write(NO_TEAMS_MSG);
         }
